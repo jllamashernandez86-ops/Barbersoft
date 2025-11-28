@@ -13,7 +13,24 @@ return new class extends Migration
     {
         Schema::create('citas', function (Blueprint $table) {
             $table->id();
+
+            // Relaciones
+            $table->foreignId('cliente_id')->constrained('clientes');
+            $table->foreignId('barbero_id')->constrained('barberos');
+            $table->foreignId('servicio_id')->constrained('servicios');
+
+            // Datos de la cita
+            $table->date('fecha');
+            $table->time('hora');
+            $table->string('estado', 20)->default('pendiente');
+
             $table->timestamps();
+
+            // Un barbero no puede tener dos citas a la misma fecha/hora
+            $table->unique(
+                ['barbero_id', 'fecha', 'hora'],
+                'citas_unique_barbero_fecha_hora'
+            );
         });
     }
 
